@@ -11,7 +11,7 @@ jobs:
     container: "node:14-bullseye"
     steps:
       - uses: actions/checkout@v2
-      - run: echo "This is commit $SHA" > ./sha.txt
+      - run: echo "This is commit $SHA with a change" > ./sha.txt
         env:
           SHA: ${{ github.sha }}
       - uses: actions/upload-artifact@v2

@@ -13,17 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: 'echo "github.sha: ${{ github.sha }}"'
-      - run: 'echo "inputs.sha: ${{ inputs.sha }}"'
+      - run: 'echo "github.event.inputs.name: ${{ github.event.inputs.name }}"'
       - run: 'echo "github.run_id: ${{ github.run_id }}"'
       - uses: actions/download-artifact@v2
-        if: ${{ !inputs.sha }}
+        if: ${{ !github.event.inputs.name }}
         with:
           name: my-artifact
       - uses: dawidd6/action-download-artifact@v2
-        if: ${{ inputs.sha }}
+        if: ${{ github.event.inputs.name }}
         with:
           workflow: main.yml
           name: my-artifact
-          commit: ${{ inputs.sha }}
+          commit: ${{ github.event.inputs.name }}
       - run: ls -la
       - run: cat ./sha.txt

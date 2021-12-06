@@ -1,15 +1,21 @@
 name: deploy
 
-on: workflow_dispatch
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      sha:
+        type: string
+        required: true
 
 jobs:
-  say_hello:
+  main:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ github.sha }}"
+      - run: echo "${{ inputs.sha || github.sha }}"
       - uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yml
           name: my-artifact
-          commit: ${{ github.sha }}
+          commit: ${{ inputs.sha || github.sha }}
       - run: cat ./sha.txt

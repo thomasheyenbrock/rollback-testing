@@ -1,0 +1,17 @@
+name: main
+
+on: workflow_call
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    container: "node:14-bullseye"
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo "This is commit $SHA with a change" > ./sha.txt
+        env:
+          SHA: ${{ github.sha }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ./sha.txt

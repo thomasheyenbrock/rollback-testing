@@ -1,0 +1,13 @@
+name: deploy
+
+on: workflow_dispatch
+
+jobs:
+  say_hello:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: my-artifact
+          path: ./sha.txt
+      - run: cat ./sha.txt

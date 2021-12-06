@@ -1,0 +1,24 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    container: "node:14-bullseye"
+    steps:
+      - uses: actions/checkout@v2
+      - run: echo "This is commit $SHA" > ./sha.txt
+        env:
+          SHA: ${{ github.sha }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ./sha.txt
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: deploy
+          token: ${{ secrets.PERSONAL_TOKEN }}

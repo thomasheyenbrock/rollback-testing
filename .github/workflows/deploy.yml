@@ -6,9 +6,10 @@ jobs:
   say_hello:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ github.sha }}""
+      - run: echo "${{ github.sha }}"
       - uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yml
           name: my-artifact
+          commit: ${{ github.sha }}
       - run: cat ./sha.txt

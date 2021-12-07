@@ -39,6 +39,7 @@ jobs:
   debug:
     needs: [setup, build]
     if: always()
+    runs-on: ubuntu-latest
     steps:
       - name: Echo
         run: echo "${{ toJSON(needs) }}"

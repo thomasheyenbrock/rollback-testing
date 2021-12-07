@@ -7,11 +7,43 @@ jobs:
     runs-on: ubuntu-latest
     container: "node:14-bullseye"
     steps:
-      - uses: actions/checkout@v2
-      - run: echo "This is commit $SHA with another change" > ./sha.txt
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+
+      - name: Set default run status
+        run: echo "::set-output name=last_run_status::default" > last_run_status
+
+      - name: Restore last run status
+        id: last_run
+        uses: actions/cache@v2
+        with:
+          path: |
+            last_run_status
+          key: ${{ github.run_id }}-${{ steps.date.outputs.date }}
+          restore-keys: |
+            ${{ github.run_id }}-
+
+      - name: Set last run status
+        id: last_run_status
+        run: cat last_run_status
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build
+        id: build
+        if: steps.last_run_status.outputs.last_run_status != 'success'
+        run: echo "This is commit $SHA with another change" > ./sha.txt
         env:
           SHA: ${{ github.sha }}
-      - uses: actions/upload-artifact@v2
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: ./sha.txt
+
+      - name: Save run status
+        if: steps.last_run_status.outputs.last_run_status != 'success'
+        run: echo "::set-output name=last_run_status::${{ steps.build.outcome }}" > last_run_status

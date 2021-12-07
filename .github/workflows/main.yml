@@ -6,11 +6,6 @@ on:
       - main
 
 jobs:
-  sentry:
-    runs-on: ubuntu-latest
-    container: "node:14-bullseye"
-    steps:
-      - run: curl -sL https://sentry.io/get-cli/ | bash
   build:
     uses: thomasheyenbrock/rollback-testing/.github/workflows/build.yml@main
   deploy:

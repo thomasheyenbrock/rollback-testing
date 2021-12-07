@@ -1,29 +1,20 @@
 name: deploy
 
-on:
-  workflow_call:
-  workflow_dispatch:
-    inputs:
-      sha:
-        type: string
-        required: true
+on: workflow_call
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - run: 'echo "github.sha: ${{ github.sha }}"'
-      - run: 'echo "github.event.inputs.sha: ${{ github.event.inputs.sha }}"'
-      - run: 'echo "github.run_id: ${{ github.run_id }}"'
-      - uses: actions/download-artifact@v2
-        if: ${{ !github.event.inputs.sha }}
-        with:
-          name: my-artifact
-      - uses: dawidd6/action-download-artifact@v2
-        if: ${{ github.event.inputs.sha }}
+      - name: Download build artifact
+        uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yml
           name: my-artifact
-          commit: ${{ github.event.inputs.sha }}
-      - run: ls -la
-      - run: cat ./sha.txt
+          commit: ${{ github.sha }}
+
+      - name: List filesystem
+        run: ls -la
+
+      - name: Print file content
+        run: cat ./sha.txt

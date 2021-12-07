@@ -6,12 +6,15 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      - name: Debug
+        run: echo "${{ ${{ github.run_id }} }}"
+
       - name: Download build artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yml
           name: my-artifact
-          commit: ${{ github.sha }}
+          run_id: ${{ github.run_id }}
 
       - name: List filesystem
         run: ls -la

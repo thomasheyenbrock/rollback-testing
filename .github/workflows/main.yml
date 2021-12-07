@@ -50,6 +50,9 @@ jobs:
       - deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Echo
+        run: echo "${{ needs.setup.outputs.last-run-status }}"
+
       - name: Save run status
         if: needs.setup.outputs.last-run-status != 'success'
         run: echo "::set-output name=last-run-status::${{ needs.deploy.outputs.run-status }}" > last-run-status

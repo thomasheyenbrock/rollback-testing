@@ -8,7 +8,6 @@ on:
 jobs:
   setup:
     outputs:
-      date: ${{ steps.date.outputs.date }}
       last-run-status: ${{ steps.last-run-status.outputs.last-run-status }}
     runs-on: ubuntu-latest
     steps:
@@ -55,14 +54,16 @@ jobs:
       - name: Echo
         run: echo "${{ needs.setup.outputs.last-run-status }}"
 
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+
       - name: Restore last run status
         uses: actions/cache@v2
         with:
           path: |
             last-run-status
-          key: ${{ github.run_id }}-${{ needs.setup.outputs.date }}
-          restore-keys: |
-            ${{ github.run_id }}-
+          key: ${{ github.run_id }}-${{ steps.date.outputs.date }}
 
       - name: Save run status
         run: echo "::set-output name=last-run-status::${{ needs.deploy.outputs.run-status }}" > last-run-status

@@ -38,7 +38,7 @@ jobs:
 
   deploy:
     needs: [setup, build]
-    if: success() || cancelled()
+    if: needs.build.result == 'success' || needs.build.result == 'skipped'
     uses: thomasheyenbrock/rollback-testing/.github/workflows/deploy.yml@main
     with:
       use-historic-artifact: ${{ needs.setup.outputs.last-run-status == 'success' }}

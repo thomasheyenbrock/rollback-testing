@@ -42,11 +42,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Echo
-        run: echo "${{ toJSON(needs) }}"
+        run: echo '${{ toJSON(needs) }}'
 
   deploy:
     needs: [setup, build]
-    if: needs.build.result == 'success' || needs.build.result == 'skipped'
+    if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
     uses: thomasheyenbrock/rollback-testing/.github/workflows/deploy.yml@main
     with:
       use-historic-artifact: ${{ needs.setup.outputs.last-run-status == 'success' }}

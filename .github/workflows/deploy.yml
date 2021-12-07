@@ -8,10 +8,13 @@ on:
         required: false
         default: false
     outputs:
-      run-status: ${{ steps.print.outcome }}
+      run-status:
+        value: ${{ jobs.main.outputs.run-status }}
 
 jobs:
   main:
+    outputs:
+      run-status: ${{ steps.print.outcome }}
     runs-on: ubuntu-latest
     steps:
       - name: Download current build artifact

@@ -21,6 +21,9 @@ jobs:
         env:
           SHA: ${{ github.sha }}
 
+      - name: Break
+        run: exit 1
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v2
         with:

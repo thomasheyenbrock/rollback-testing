@@ -6,8 +6,50 @@ on:
       - main
 
 jobs:
+  setup:
+    outputs:
+      last-run-status: ${{ steps.last-run-status.outputs.last-run-status }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+
+      - name: Set default run status
+        run: echo "::set-output name=last-run-status::default" > last-run-status
+
+      - name: Restore last run status
+        uses: actions/cache@v2
+        with:
+          path: |
+            last-run-status
+          key: ${{ github.run_id }}-${{ steps.date.outputs.date }}
+          restore-keys: |
+            ${{ github.run_id }}-
+
+      - name: Set last run status
+        id: last-run-status
+        run: cat last-run-status
+
   build:
+    needs: setup
+    if: needs.setup.outputs.last-run-status != 'success'
     uses: thomasheyenbrock/rollback-testing/.github/workflows/build.yml@main
+
   deploy:
-    needs: build
+    needs:
+      - setup
+      - build
     uses: thomasheyenbrock/rollback-testing/.github/workflows/deploy.yml@main
+    with:
+      use-historic-artifact: ${{ needs.setup.outputs.last-run-status == 'success' }}
+
+  run-status:
+    needs:
+      - setup
+      - deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save run status
+        if: needs.setup.outputs.last-run-status != 'success'
+        run: echo "::set-output name=last-run-status::${{ needs.deploy.outputs.run-status }}" > last-run-status

@@ -1,24 +1,36 @@
 name: deploy
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      use-historic-artifact:
+        type: boolean
+        required: false
+        default: false
+    outputs:
+      run-status: ${{ steps.print.outcome }}
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: Debug
-        run: echo "${{ github.run_id }}"
+      - name: Download current build artifact
+        uses: actions/download-artifact@v2
+        if: ${{ !inputs.use-historic-artifact }}
+        with:
+          name: my-artifact
 
-      - name: Download build artifact
+      - name: Download historic build artifact
         uses: dawidd6/action-download-artifact@v2
+        if: ${{ inputs.use-historic-artifact }}
         with:
           workflow: main.yml
           name: my-artifact
           run_id: ${{ github.run_id }}
-          workflow_conclusion: in_progress
 
-      - name: List filesystem
+      - name: List files
         run: ls -la
 
       - name: Print file content
+        id: print
         run: cat ./sha.txt

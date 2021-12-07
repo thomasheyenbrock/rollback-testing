@@ -36,6 +36,13 @@ jobs:
     if: needs.setup.outputs.last-run-status != 'success'
     uses: thomasheyenbrock/rollback-testing/.github/workflows/build.yml@main
 
+  debug:
+    needs: [setup, build]
+    if: always()
+    steps:
+      - name: Echo
+        run: echo "${{ toJSON(needs) }}"
+
   deploy:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'

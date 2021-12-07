@@ -6,6 +6,11 @@ on:
       - main
 
 jobs:
+  sentry:
+    runs-on: ubuntu-latest
+    container: "node:14-bullseye"
+    steps:
+      - run: npm i -g @sentry/cli@^1.71.0
   build:
     uses: thomasheyenbrock/rollback-testing/.github/workflows/build.yml@main
   deploy:

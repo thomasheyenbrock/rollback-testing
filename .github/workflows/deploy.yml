@@ -19,17 +19,17 @@ jobs:
     steps:
       - name: Download current build artifact
         uses: actions/download-artifact@v2
-        if: ${{ !inputs.use-historic-artifact }}
+        # if: ${{ !inputs.use-historic-artifact }}
         with:
           name: my-artifact
 
-      - name: Download historic build artifact
-        uses: dawidd6/action-download-artifact@v2
-        if: ${{ inputs.use-historic-artifact }}
-        with:
-          workflow: main.yml
-          name: my-artifact
-          run_id: ${{ github.run_id }}
+      # - name: Download historic build artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   if: ${{ inputs.use-historic-artifact }}
+      #   with:
+      #     workflow: main.yml
+      #     name: my-artifact
+      #     run_id: ${{ github.run_id }}
 
       - name: List files
         run: ls -la

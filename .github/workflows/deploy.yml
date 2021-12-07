@@ -15,6 +15,7 @@ jobs:
           workflow: main.yml
           name: my-artifact
           run_id: ${{ github.run_id }}
+          workflow_conclusion: in_progress
 
       - name: List filesystem
         run: ls -la

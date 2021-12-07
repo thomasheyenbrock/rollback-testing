@@ -37,17 +37,14 @@ jobs:
     uses: thomasheyenbrock/rollback-testing/.github/workflows/build.yml@main
 
   deploy:
-    needs:
-      - setup
-      - build
+    needs: [setup, build]
+    if: success() || cancelled()
     uses: thomasheyenbrock/rollback-testing/.github/workflows/deploy.yml@main
     with:
       use-historic-artifact: ${{ needs.setup.outputs.last-run-status == 'success' }}
 
   run-status:
-    needs:
-      - setup
-      - deploy
+    needs: [setup, deploy]
     if: needs.setup.outputs.last-run-status != 'success'
     runs-on: ubuntu-latest
     steps:
